@@ -1,0 +1,9 @@
+{
+    "server": "panx.dev",
+    "port": 8000,
+    "secured": true,
+    "password": "generate strong password",
+    "privateKey": "/etc/letsencrypt/live/panx.dev/privkey.pem",
+    "certificate": "/etc/letsencrypt/live/panx.dev/cert.pem",
+    "log": false
+}

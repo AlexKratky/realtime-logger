@@ -1,0 +1,37 @@
+{
+  "name": "realtime-logger",
+  "version": "1.0.0",
+  "description": "Realtime logging",
+  "main": "realtime-logger.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "diskspace": "^2.0.0",
+    "express": "^4.16.1",
+    "os-utils": "^0.0.14",
+    "socket.io": "^2.0.3",
+    "systeminformation": "^3.42.0",
+    "os-usage": "^0.0.3",
+    "ejs": "^3.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexKratky/realtime-logger.git"
+  },
+  "keywords": [
+    "log",
+    "logger",
+    "realtime",
+    "logging",
+    "logs"
+  ],
+  "author": "Alex Kratky <alex@panx.dev> (https://alexkratky.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlexKratky/realtime-logger/issues"
+  },
+  "homepage": "https://github.com/AlexKratky/realtime-logger#readme"
+}

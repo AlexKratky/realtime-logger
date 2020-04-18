@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Alex Kratky - RealTimeLogger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500" rel="stylesheet">
+    <link rel="shortcut icon" href="https://project.alexkratky.cz/res/img/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="jsonview.css">
+    <script type="text/javascript" src="jsonview.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font: 14px/1.8 "Poppins", "Helvetica", "lucida grande", sans-serif, sans-serif;
+            font-weight: 200;
+            box-sizing: border-box;
+        }
+        :root {
+            --dark-gray: #1A1A1D;
+            --red: #C3073F;
+            --gray: #474B4F;
+        }
+        body {
+            background-color: var(--dark-gray);
+        }
+        .center {
+            text-align: center;
+        }
+        h3 {
+            font-size: 36px;
+            color:var(--red);
+            font-weight: 300;
+        }
+        #log {
+            color: white;
+            font-weight: 300;
+        }
+        #status {
+            font-weight: 200;
+            color:white;
+            font-size: 20px;
+        }
+        @media only screen and (max-width: 530px) {
+            h3 {
+                padding-top:15px;
+                padding-bottom: 15px;
+            }   
+        }
+        .main {
+            position: absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            background-color: var(--dark-gray);
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        svg {
+            width: 100px;
+            margin-left: 40px;
+            height: 100px;
+        }
+        hr {
+            border: none;
+            outline: none;
+            border-top: 1px solid var(--red);
+        }
+    </style>
+    <script>
+        var server = "<%= server %>";
+        var port = "<%= port %>";
+        var secured = (("<%= secured %>") == "true");
+        var srv;
+        function showLoader() {
+            $(".main").html('<svg version="1.1" id="L5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"> <circle fill="#C3073F" stroke="none" cx="6" cy="50" r="6"> <animateTransform attributeName="transform" dur="1s" type="translate" values="0 15 ; 0 -15; 0 15" repeatCount="indefinite" begin="0.1"/> </circle> <circle fill="#C3073F" stroke="none" cx="30" cy="50" r="6"> <animateTransform attributeName="transform" dur="1s" type="translate" values="0 10 ; 0 -10; 0 10" repeatCount="indefinite" begin="0.2"/> </circle> <circle fill="#C3073F" stroke="none" cx="54" cy="50" r="6"> <animateTransform attributeName="transform" dur="1s" type="translate" values="0 5 ; 0 -5; 0 5" repeatCount="indefinite" begin="0.3"/> </circle></svg>');
+        }
+        $(document).ready(function () {
+            $("#clear").click(clear);
+            showLoader();
+            var SERVER_URL = (secured ? 'https' : 'http') + '://' + server + ':' + port;
+            console.log('connecting to: ' + SERVER_URL);
+
+            srv = io.connect(SERVER_URL, { secure: true, reconnect: true, rejectUnauthorized: false, timeout: 5000 });
+
+            srv.on('log', (data) => {
+                //$('#log').append(print_r(data) + "<hr>");
+                jsonView.format(data, '#log');
+                $('#log').append("<hr>");
+                console.log(data);
+            });
+
+            srv.on('connect', (reason) => {
+                $(".main").remove();
+                $("#status").html("Status: connected");
+                console.log(reason);
+            });
+
+            srv.on('disconnect', (reason) => {
+                $("#status").html("Status: disconnected");
+                alert('Disconnected! Your RealTime server was propably shutdowned.');
+                console.log(reason);
+            });
+
+            srv.on('connect_error', (reason) => {
+                $("#status").html("Status: connection error");
+                alert('Connection error! Check if your RealTime server is running.');
+                console.log(reason);
+            });
+        });
+        function send(){
+            srv.emit("log", $('#input').val());
+        }
+        function clear() {
+            $('#log').html("");
+        }
+
+
+            function print_r(arr, level) {
+                var dumped_text = "";
+                if (!level) level = 0;
+
+                //The padding given at the beginning of the line.
+                var level_padding = "";
+                for (var j = 0; j < level + 1; j++) level_padding += "    ";
+
+                if (typeof (arr) == 'object') { //Array/Hashes/Objects 
+                    for (var item in arr) {
+                        var value = arr[item];
+
+                        if (typeof (value) == 'object') { //If it is an array,
+                            if(value === null) {
+                                dumped_text += level_padding + "'" + item + "' => null\n";
+                                continue;
+                            }
+                            dumped_text += level_padding + "'" + item + "' ...\n";
+                            dumped_text += print_r(value, level + 1);
+                        } else {
+                            dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+                        }
+                    }
+                } else { //Stings/Chars/Numbers etc.
+                    dumped_text = "===>" + arr + "<===(" + typeof (arr) + ")";
+                }
+                return dumped_text;
+            }
+    </script>
+</head>
+<body id="content">
+    <div class="main"></div>
+    <div class="center">
+        <h3>RealTimeLogger</h3>
+        <h3 id="status">Status: connecting ...</h3>
+    </div>
+    <pre>
+        <div id="log"></div>
+    </pre>
+
+    <div class="center">
+        <h3 id="clear" style="cursor: pointer;">Clear</h3>
+        <h3>&copy; Alex Kratky 2020</h3>
+    </div>
+</body>
+</html>

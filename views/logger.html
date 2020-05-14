@@ -82,6 +82,7 @@
         function showLoader() {
             $(".main").html('<svg version="1.1" id="L5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"> <circle fill="#C3073F" stroke="none" cx="6" cy="50" r="6"> <animateTransform attributeName="transform" dur="1s" type="translate" values="0 15 ; 0 -15; 0 15" repeatCount="indefinite" begin="0.1"/> </circle> <circle fill="#C3073F" stroke="none" cx="30" cy="50" r="6"> <animateTransform attributeName="transform" dur="1s" type="translate" values="0 10 ; 0 -10; 0 10" repeatCount="indefinite" begin="0.2"/> </circle> <circle fill="#C3073F" stroke="none" cx="54" cy="50" r="6"> <animateTransform attributeName="transform" dur="1s" type="translate" values="0 5 ; 0 -5; 0 5" repeatCount="indefinite" begin="0.3"/> </circle></svg>');
         }
+        
         $(document).ready(function () {
             $("#clear").click(clear);
             showLoader();
@@ -91,7 +92,6 @@
             srv = io.connect(SERVER_URL, { secure: true, reconnect: true, rejectUnauthorized: false, timeout: 5000 });
 
             srv.on('log', (data) => {
-                //$('#log').append(print_r(data) + "<hr>");
                 jsonView.format(data, '#log');
                 $('#log').append("<hr>");
                 console.log(data);
@@ -115,42 +115,14 @@
                 console.log(reason);
             });
         });
-        function send(){
+        
+        function send() {
             srv.emit("log", $('#input').val());
         }
+
         function clear() {
             $('#log').html("");
         }
-
-
-            function print_r(arr, level) {
-                var dumped_text = "";
-                if (!level) level = 0;
-
-                //The padding given at the beginning of the line.
-                var level_padding = "";
-                for (var j = 0; j < level + 1; j++) level_padding += "    ";
-
-                if (typeof (arr) == 'object') { //Array/Hashes/Objects 
-                    for (var item in arr) {
-                        var value = arr[item];
-
-                        if (typeof (value) == 'object') { //If it is an array,
-                            if(value === null) {
-                                dumped_text += level_padding + "'" + item + "' => null\n";
-                                continue;
-                            }
-                            dumped_text += level_padding + "'" + item + "' ...\n";
-                            dumped_text += print_r(value, level + 1);
-                        } else {
-                            dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-                        }
-                    }
-                } else { //Stings/Chars/Numbers etc.
-                    dumped_text = "===>" + arr + "<===(" + typeof (arr) + ")";
-                }
-                return dumped_text;
-            }
     </script>
 </head>
 <body id="content">

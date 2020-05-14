@@ -1,6 +1,6 @@
 /**
     * @name        realtime-logger.js
-    * @version     v0.1.0 (14-4-2020)[dd-mm-yyyy]
+    * @version     v1.0.0 (14-5-2020)[dd-mm-yyyy]
     * @link        https://alexkratky.com          Author website
     * @author      Alex Kratky <alex@panx.dev>
     * @copyright   Copyright (c) 2020 Alex Kratky
